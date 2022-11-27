@@ -1,99 +1,67 @@
-# vue-admin-template
-
-English | [简体中文](./README-zh.md)
-
-> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
-
-**Live demo:** http://panjiachen.github.io/vue-admin-template
+# 尚品汇后台
 
 
-**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
 
-<p align="center">
-  <b>SPONSORED BY</b>
-</p>
-<p align="center">
-   <a href="https://finclip.com?from=vue_element" title="FinClip" target="_blank">
-      <img height="200px" src="https://gitee.com/panjiachen/gitee-cdn/raw/master/vue%E8%B5%9E%E5%8A%A9.png" title="FinClip">
-   </a>
-</p>
+## 2022.11.26
 
-## Build Setup
+> ### 内容
 
-```bash
-# clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+1.下载后台模板vue-admin-template
 
-# enter the project directory
-cd vue-admin-template
+2.修改相关配置及重写：
 
-# install dependency
-npm install
+​	1.配置代理
 
-# develop
-npm run dev
-```
+​	2.api.js路径重写
 
-This will automatically open http://localhost:9528
+​	3.vuex请求重写
 
-## Build
+​	4.删除无用文件
 
-```bash
-# build for test environment
-npm run build:stage
 
-# build for production environment
-npm run build:prod
-```
 
-## Advanced
 
-```bash
-# preview the release environment effect
-npm run preview
 
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
+## 11.27
 
-# code format check
-npm run lint
+> ### 内容
 
-# code format check and auto fix
-npm run lint -- --fix
-```
+1.增加商业管理路由及其子路由四个
 
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
+2.修改app-main样式
 
-## Demo
+3.品牌管理静态组件
 
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
+​	按钮：el-button
 
-## Extra
+​	表格：el-table
 
-If you want router permission && generate menu by user roles , you can use this branch [permission-control](https://github.com/PanJiaChen/vue-admin-template/tree/permission-control)
+​	分页器：el-pagination
 
-For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
+4.品牌管理动态展示
 
-## Related Project
+​	1.数据请求函数封装，挂载后请求
 
-- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+​		将数据写入data：分页器数据和展示数据
 
-- [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
+​	2.动态展示数据
 
-- [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
+​		序号：type="index"
 
-- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
+​		品牌名称：prop="tmName"
 
-## Browsers support
+​		图片：使用作用域插槽slot-scope="{row,$index}"  row传入data数组
 
-Modern browsers and Internet Explorer 10+.
+​		按钮：作用域插槽，插入el-button			
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+​	3.编写分页器转页面方法handleCurrentChange(pager),pager为点击的页面
 
-## License
+> ### 重点
 
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
+新增配置代理，商品的请求地址与登录不一样。新增brand-request.js适配商品请求
 
-Copyright (c) 2017-present PanJiaChen
+​	1 .env.development 增加 VUE_APP_BRAND_API = '/brand-api'
+
+​	2 vue.config proxy添加新的配置项，适配商品请求url
+
+​	3 utils文件夹新增brand-request.js baseUrl改为 rocess.env.VUE_APP_BRAND_API

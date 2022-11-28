@@ -20,8 +20,6 @@
 
 
 
-
-
 ## 11.27
 
 > ### 内容
@@ -56,6 +54,8 @@
 
 ​	3.编写分页器转页面方法handleCurrentChange(pager),pager为点击的页面
 
+​	4.选择每页展示条数，编写方法handleSizeChange(limit)，limit为选择的条数
+
 > ### 重点
 
 新增配置代理，商品的请求地址与登录不一样。新增brand-request.js适配商品请求
@@ -65,3 +65,26 @@
 ​	2 vue.config proxy添加新的配置项，适配商品请求url
 
 ​	3 utils文件夹新增brand-request.js baseUrl改为 rocess.env.VUE_APP_BRAND_API
+
+
+
+## 11.28
+
+> ### 内容
+
+1.添加，修改静态内容：el-dialog组件，上传文件el-upload组件
+
+​	使用el-dialog收集表单数据，添加或修改品牌信息
+
+2.修改品牌信息，动态展示el-dialog的标题
+
+3.添加表单验证，:rules="rules" 在el-form 组件中使用，需要有:data才可使用
+
+​	this.$refs.***.validata(()=>{}) 实现验证所有表单后再进行一下操作
+
+4.删除品牌，套用this.$confirm()模板，嵌套删除的请求方法。判断list中数据个数，根据个数返回具体页数
+
+5.封装三级联动组件，注册为全局组件。
+
+​	动态展示三级联动数据：封装数据方法
+

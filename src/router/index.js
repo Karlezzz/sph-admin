@@ -67,11 +67,12 @@ export const constantRoutes = [{
     },
     children: [
       {
-        path: 'tradermark',
+        path: 'trademark',
         name: 'trademark',
+        
         component: () => import('@/views/product/tradeMark'),
         meta: {
-          title: '平台属性管理'
+          title: '品牌管理'
         }
       },
       {
@@ -79,9 +80,10 @@ export const constantRoutes = [{
         name: 'Attr',
         component: () => import('@/views/product/attr'),
         meta: {
-          title: '品牌管理'
+          title: '平台属性管理'
         }
       },
+      
       {
         path: 'sku',
         name: 'Sku',

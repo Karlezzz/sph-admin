@@ -5,7 +5,7 @@
     </el-card>
     <el-card>
       <div v-show="isShowList">
-        <el-button type="primary" icon="el-icon-plus" @click="isShowList=false" :disabled="category3Id?false:true">添加属性
+        <el-button type="primary" icon="el-icon-plus" @click="addAttr" :disabled="category3Id?false:true">添加属性
         </el-button>
         <el-table border="" style="width: 100%;margin-top:10px" :data="attrInfoList">
           <el-table-column type="index" label="序号" width="70px" align="center">
@@ -21,26 +21,37 @@
           </el-table-column>
           <el-table-column prop="address" label="操作">
             <template slot-scope="{row,$index}">
-              <el-button type="warning" icon="el-icon-edit" size="mini" @click="isShowList=false"></el-button>
+              <el-button type="warning" icon="el-icon-edit" size="mini" @click="updateAttr(row)"></el-button>
               <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteAttrInfo(row)"></el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <div v-show="!isShowList">
-        <el-form :inline="true" label-width="80px">
+        <el-form :inline="true" label-width="80px" :model="attrInfo">
           <el-form-item label="属性名">
-            <el-input placeholder="请输入属性名"></el-input>
+            <el-input placeholder="请输入属性名" v-model="attrInfo.attrName"></el-input>
           </el-form-item>
         </el-form>
-        <el-button type="primary" icon="el-icon-plus">添加属性值</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addAttrValue" :disabled="!attrInfo.attrName">添加属性值
+        </el-button>
         <el-button @click="isShowList=true">取消</el-button>
-        <el-table border style="width:100%;margin:20px 0">
+        <el-table border style="width:100%;margin:20px 0" :data="attrInfo.attrValueList">
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
-          <el-table-column label="属性值名称"></el-table-column>
-          <el-table-column label="操作"></el-table-column>
+          <el-table-column label="属性值名称">
+            <template slot-scope="{row,$index}">
+              <el-input v-model="row.valueName" placeholder="请输入属性值名称" size="mini" @blur="row.flag=false" v-if="row.flag" @keyup.native.enter="row.flag=false"></el-input>
+              <span @click="row.flag=true" v-else>{{row.valueName}}</span>
+              
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="{row,$index}">
+              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" >保存</el-button>
         <el-button @click="isShowList=true">取消</el-button>
       </div>
 
@@ -49,18 +60,38 @@
 </template>
 
 <script>
+import cloneDeep from "lodash/cloneDeep"
   export default {
     name: 'Attr',
     data() {
       return {
+        
         category1Id: '',
         category2Id: '',
         category3Id: '',
         attrInfoList: [],
-        isShowList: false
+        isShowList: false,
+        attrInfo: {
+          attrName: '',
+          attrValueList: [],
+          categoryId: 0,
+          categoryLevel: 0,
+          id: 0,
+          flag:true,
+        }
       }
     },
     methods: {
+      addAttr() {
+        this.isShowList = false
+        this.attrInfo = {
+          attrName: '',
+          attrValueList: [],
+          categoryId: this.category3Id,
+          categoryLevel: 0,
+          id: 0
+        }
+      },
       getCategoryId({
         categoryId,
         level
@@ -111,9 +142,19 @@
       },
       addOrUpdateAttrInfo() {
         this.isShowList = false
+      },
+      addAttrValue() {
+        this.attrInfo.attrValueList.push({
+          flag:true,
+          attrId: this.attrInfo.id,
+          id: undefined,
+          valueName: ''
+        })
+      },
+      updateAttr(row){
+        this.isShowList=false
+        this.attrInfo = cloneDeep(row)
       }
-
-
     },
   }
 

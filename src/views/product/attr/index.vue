@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card style="margin:20px 0;">
-      <CategorySelect @getCategoryId="getCategoryId"></CategorySelect>
+      <CategorySelect @getCategoryId="getCategoryId" :isShowList="isShowList"></CategorySelect>
     </el-card>
     <el-card>
       <div v-show="isShowList">
@@ -40,18 +40,20 @@
           <el-table-column label="序号" type="index" width="80" align="center"></el-table-column>
           <el-table-column label="属性值名称">
             <template slot-scope="{row,$index}">
-              <el-input v-model="row.valueName" placeholder="请输入属性值名称" size="mini" @blur="row.flag=false" v-if="row.flag" @keyup.native.enter="row.flag=false"></el-input>
-              <span @click="row.flag=true" v-else>{{row.valueName}}</span>
-              
+              <el-input v-model="row.valueName" placeholder="请输入属性值名称" size="mini" @blur="toLook(row)" v-if="row.flag"
+                @keyup.native.enter="row.flag=false" :ref="$index"></el-input>
+              <span @click="toEdit(row,$index)" v-else style="display:block;height: 23px;">{{row.valueName}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="{row,$index}">
-              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+              <el-popconfirm :title="`确定删除  ${row.valueName}  吗？`"  @onConfirm="deleteAttrValue($index)">
+                <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference"></el-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" >保存</el-button>
+        <el-button type="primary" @click="addOrUpdateAttr">保存</el-button>
         <el-button @click="isShowList=true">取消</el-button>
       </div>
 
@@ -60,24 +62,23 @@
 </template>
 
 <script>
-import cloneDeep from "lodash/cloneDeep"
+  import cloneDeep from "lodash/cloneDeep"
   export default {
     name: 'Attr',
     data() {
       return {
-        
         category1Id: '',
         category2Id: '',
         category3Id: '',
         attrInfoList: [],
-        isShowList: false,
+        isShowList: true,
         attrInfo: {
           attrName: '',
           attrValueList: [],
           categoryId: 0,
           categoryLevel: 0,
           id: 0,
-          flag:true,
+          flag: true,
         }
       }
     },
@@ -145,15 +146,63 @@ import cloneDeep from "lodash/cloneDeep"
       },
       addAttrValue() {
         this.attrInfo.attrValueList.push({
-          flag:true,
+          flag: true,
           attrId: this.attrInfo.id,
           id: undefined,
           valueName: ''
         })
+        this.$nextTick(() => {
+          this.$refs[this.attrInfo.attrValueList.length - 1].focus()
+        })
       },
-      updateAttr(row){
-        this.isShowList=false
+      updateAttr(row) {
+        this.isShowList = false
         this.attrInfo = cloneDeep(row)
+        this.attrInfo.attrValueList.forEach(item => {
+          this.$set(item, 'flag', false)
+        });
+      },
+      toLook(row) {
+        row.flag = false
+        if (row.valueName.trim() == '') {
+          this.$message("请勿输入空白值")
+          this.attrInfo.attrValueList.pop()
+        }
+        let isRepeat = this.attrInfo.attrValueList.some(item => {
+          if (row !== item) {
+            return row.valueName == item.valueName
+          }
+        })
+        if (isRepeat) {
+          this.attrInfo.attrValueList.pop()
+          this.$message("请勿输入重复值")
+        }
+      },
+      toEdit(row, index) {
+        row.flag = true
+        this.$nextTick(() => {
+          this.$refs[index].focus()
+        })
+      },
+      deleteAttrValue(index){
+        this.attrInfo.attrValueList.splice(index,1)
+      },
+      async addOrUpdateAttr(){
+        // let result = await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
+        this.attrInfo.attrValueList = this.attrInfo.attrValueList.filter(item=>{
+          delete item.flag
+          return true
+        })
+        if(result.code==200){
+          this.$message({
+            type:'success',
+            message:'保存成功'
+          })
+          this.isShowList = false
+          this.getAttrInfoList()
+        }else{
+          this.getAttrInfoList()
+        }
       }
     },
   }

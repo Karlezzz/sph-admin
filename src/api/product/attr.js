@@ -25,7 +25,7 @@ export const reqDeleteAttrInfo=(attrId)=>request({
     method:'delete'
 })
 
-export const reqAddAttr=(data)=>request({
+export const reqAddOrUpdateAttr=(data)=>request({
     url:`/admin/product/saveAttrInfo`,
     method:'post',
     data

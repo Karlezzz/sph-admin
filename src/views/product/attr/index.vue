@@ -188,11 +188,12 @@
         this.attrInfo.attrValueList.splice(index,1)
       },
       async addOrUpdateAttr(){
-        // let result = await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
+        
         this.attrInfo.attrValueList = this.attrInfo.attrValueList.filter(item=>{
           delete item.flag
           return true
         })
+        let result = await this.$API.attr.reqAddOrUpdateAttr(this.attrInfo)
         if(result.code==200){
           this.$message({
             type:'success',
